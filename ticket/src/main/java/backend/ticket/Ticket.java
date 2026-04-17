@@ -1,9 +1,6 @@
 package backend.ticket;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import org.springframework.web.multipart.MultipartFile;
+import jakarta.persistence.*;
 
 @Entity
 
@@ -11,17 +8,29 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class Ticket {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+
+    public Long getId() { return id; }
+
     @Column(name = "enrolled_people") private String name;
+
+    public String getName() { return name; }
 
     @Column(unique = true, name = "email_addresses") private String email;
 
+    public String getEmail() { return email; }
+
     @Column(unique = true, name = "github_accounts") private String github;
 
-    @Column(name = "photos") private MultipartFile image;
+    public String getGithub() { return github; }
+
+    @Lob @Column(name = "photos", columnDefinition="BLOB") private byte[] image;
+
+    public byte[] getImage() { return image; }
 
     public Ticket () {}
 
-    public Ticket(DataTransferTicket receivedTicket) {
+    public Ticket (DataTransferTicket receivedTicket) {
 
         name = receivedTicket.name();
 
@@ -30,5 +39,16 @@ public class Ticket {
         github = receivedTicket.github();
 
         image = receivedTicket.image();
+    }
+
+    public Ticket (String name, String email, String github, byte[] image) {
+
+        this.name = name;
+
+        this.email = email;
+
+        this.github = github;
+
+        this.image = image;
     }
 }

@@ -1,5 +1,3 @@
 package backend.ticket;
 
-import org.springframework.web.multipart.MultipartFile;
-
-public record DataTransferTicket (String name, String email, String github, MultipartFile image) {}
+public record DataTransferTicket (Long id, String name, String email, String github, byte[] image) {}

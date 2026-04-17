@@ -1,21 +1,26 @@
 package backend.ticket;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public class TicketServices {
+@Service public class TicketServices {
+    
+    private final TicketsRepository boxOffice;
 
-    @Autowired private TicketsRepository BOX_OFFICE;
+    public TicketServices (TicketsRepository boxOffice) { this.boxOffice = boxOffice; }
 
-    public DataTransferTicket buildTicket (String name, String email, String github, MultipartFile image) {
+    public Ticket buildTicket (String name, String email, String github, byte[] image) {
 
-        return new DataTransferTicket(name, email, github, image);
+        return new Ticket(name, email, github, image);
     }
 
-    public void save (DataTransferTicket receivedTicket) {
+    @Transactional public Ticket save (Ticket ticket) {
 
-        Ticket savedTicket = new Ticket(receivedTicket);
+        return boxOffice.save(ticket);
+    }
 
-        BOX_OFFICE.save(savedTicket);
+    public DataTransferTicket ticketToDTO (Ticket ticket) {
+
+        return new DataTransferTicket(ticket.getId(), ticket.getName(), ticket.getEmail(), ticket.getGithub(), ticket.getImage());
     }
 }
